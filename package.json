@@ -1,6 +1,6 @@
 {
   "name": "i3s-fgp-reader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A JavaScript reader for I3S classic .FGP (fingerprint) files.",
   "main": "fgp2json.js",
   "scripts": {
