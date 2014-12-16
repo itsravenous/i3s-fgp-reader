@@ -21,24 +21,52 @@ var readFingerprint = function (file) {
 	var version = reader.nextString(4);
 
 	// Get reference points
-	var refs = [];
-	refs.push([reader.nextDoubleBE(), reader.nextDoubleBE()]);
-	refs.push([reader.nextDoubleBE(), reader.nextDoubleBE()]);
-	refs.push([reader.nextDoubleBE(), reader.nextDoubleBE()]);
+	var ref1x = reader.nextDoubleBE();
+	var ref1y = reader.nextDoubleBE();
+	var ref2x = reader.nextDoubleBE();
+	var ref2y = reader.nextDoubleBE();
+	var ref3x = reader.nextDoubleBE();
+	var ref3y = reader.nextDoubleBE();
+	/**
+	 * List of reference points grouped in arrays of x and y
+	 */
+	var refs = [
+		[ref1x, ref1y],
+		[ref2x, ref2y],
+		[ref3x, ref3y]
+	];
+	/**
+	 * List of reference points as flat array
+	 */
+	var refsRaw = [ref1x, ref1y, ref2x, ref2y, ref3x, ref3y];
 
 	// Get number of keypoints
 	var cnt = reader.nextInt32BE();
 
 	// Get keypoints
+	/**
+	 * List of keypoints grouped in arrays of x, y and size
+	 */
 	var keypoints = [];
+	/**
+	 * List of keypoints in a flat array, without size
+	 */
+	var keypointsRaw = [];
+	var x, y, size;
 	for (var i = 0; i < cnt; i ++) {
-		keypoints.push([reader.nextDoubleBE(), reader.nextDoubleBE(), reader.nextDoubleBE()]);
+		x = reader.nextDoubleBE();
+		y = reader.nextDoubleBE();
+		size = reader.nextDoubleBE();
+		keypoints.push([x, y, size]);
+		keypointsRaw.push(x, y);
 	}
 
 	// Create fingerprint object
 	var fgp = {
 		refs: refs,
-		keypoints: keypoints
+		refsRaw: refsRaw,
+		keypoints: keypoints,
+		keypointsRaw: keypointsRaw
 	}
 
 	return fgp;
