@@ -14,7 +14,7 @@ var BufferReader = require('buffer-reader');
 var readFingerprint = function (file) {
 	var filesize = fs.statSync(file).size;
 
-	var buffer = fs.readFileSync(file)
+	var buffer = fs.readFileSync(file);
 	var reader = new BufferReader(buffer);
 
 	// Get FGP I3S version - TODO check this is an I3S Classic fingerprint
@@ -67,10 +67,10 @@ var readFingerprint = function (file) {
 		refsRaw: refsRaw,
 		keypoints: keypoints,
 		keypointsRaw: keypointsRaw
-	}
+	};
 
 	return fgp;
-}
+};
 
 // Export function
 module.exports = readFingerprint;
