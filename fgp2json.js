@@ -7,6 +7,14 @@ var fs = require('fs');
 var BufferReader = require('buffer-reader');
 
 /**
+ * Meta-type constants
+ */
+var YESNO = 0,
+	NUMBER = 1;
+	SML = 2;
+	ENUM = 3;
+
+/**
  * Creates a JSON representation of an I3S .fgp (fingerprint) file
  * @param {String} fingerprint file to read
  * @return {Object} fingerprint, mae up of reference points and keypoints
@@ -61,12 +69,44 @@ var readFingerprint = function (file) {
 		keypointsRaw.push(x, y);
 	}
 
+	// Read commentfield
+	var commentLen = reader.nextInt32BE(),
+		comment = reader.nextString(commentLen);
+
+
+	var metaCnt = reader.nextInt32BE();
+
+	var strlen,
+		name,
+		type,
+		value,
+		meta = {};
+	for (i = 0; i < metaCnt; i++) {
+		strlen = reader.nextInt32BE();
+		name = reader.nextString(strlen);
+		type = reader.nextInt32BE();
+
+		switch(type) {
+			case YESNO:
+			case SML:
+			case ENUM:
+				value = reader.nextInt32BE();
+			break;
+			case NUMBER:
+				value = reader.nextDoubleBE();
+			break;
+		}
+		meta[name] = value;
+	}
+
 	// Create fingerprint object
 	var fgp = {
 		refs: refs,
 		refsRaw: refsRaw,
 		keypoints: keypoints,
-		keypointsRaw: keypointsRaw
+		keypointsRaw: keypointsRaw,
+		meta: meta,
+		comment: comment
 	};
 
 	return fgp;
